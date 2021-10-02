@@ -21,19 +21,11 @@ export default class World extends GameModule {
 
         this.cycleState = 'CALM';
         this.cycleTick = scene.time.addEvent({ delay: 30000, repeat: -1});
-
-        this.timerCamera = scene.cameras.add();
-        this.tiles.forEach(tile => this.timerCamera.ignore(tile));
-        this.timerText = scene.add.text(30, 30, '', { font: '24px Courier', fill: '#aaaaaa' });
-        scene.cameras.main.ignore(this.timerText)
+        this.tiles.forEach(tile => this.UI.uiCameraIgnore(tile));
 
         this.addTiles();
     }
     update() {
-        const totalSecondsElapsed = Math.floor(this.cycleTick.elapsed / 1000);
-        const minutes = Math.floor(totalSecondsElapsed / 60)
-        const seconds = totalSecondsElapsed % 60;
-        this.timerText.setText((minutes) ? `${minutes}:${(seconds < 10) ? '0' : ''}${seconds}` : seconds)
     }
     shuffleTiles() {
         for (let i = this.tiles.length - 1; i > 0; i--) {

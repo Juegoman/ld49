@@ -6,6 +6,7 @@ import barrelImage from './assets/barrel.png';
 
 import World from './World';
 import Player from './Player';
+import UI from './UI';
 
 export default class GameScene extends Phaser.Scene {
     constructor () {
@@ -13,6 +14,7 @@ export default class GameScene extends Phaser.Scene {
         this.gameModules = {
             world: null,
             player: null,
+            UI: null,
             // weapon: null,
             // enemy: null,
             // hitspark: null,
@@ -28,6 +30,7 @@ export default class GameScene extends Phaser.Scene {
     }
 
     create () {
+        this.gameModules.UI = new UI(this.gameModules, this);
         this.gameModules.world = new World(this.gameModules, this);
         this.gameModules.player = new Player(this.gameModules, this);
         // this.gameModules.weapon = new Weapon(this.gameModules, this);
@@ -52,5 +55,6 @@ export default class GameScene extends Phaser.Scene {
         // this.gameModules.weapon.update();
         // this.gameModules.enemy.update();
         // this.gameModules.hitspark.update();
+        this.gameModules.UI.update();
     }
 }

@@ -8,6 +8,9 @@ export default class GameModule {
     get player() {
       return this.gameModules.player;
     }
+    get UI() {
+        return this.gameModules.UI;
+    }
     // get weapon() {
     //   return this.gameModules.weapon;
     // }

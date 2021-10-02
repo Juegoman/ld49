@@ -14,7 +14,7 @@ export default class Player extends GameModule {
         super(gameModules);
         this.scene = scene;
         this.sprite = scene.add.sprite(400, 300, 'character', 0);
-        this.world.timerCamera.ignore(this.sprite);
+        this.UI.uiCameraIgnore(this.sprite);
         this.cursors = scene.input.keyboard.addKeys({
           'up': Phaser.Input.Keyboard.KeyCodes.W,
           'down': Phaser.Input.Keyboard.KeyCodes.S,
