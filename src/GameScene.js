@@ -30,8 +30,6 @@ export default class GameScene extends Phaser.Scene {
     create () {
         this.gameModules.world = new World(this.gameModules, this);
         this.gameModules.player = new Player(this.gameModules, this);
-        this.add.sprite(280, 200, 'barrel');
-        this.add.sprite(390, 220, 'barrel');
         // this.gameModules.weapon = new Weapon(this.gameModules, this);
         // this.gameModules.enemy = new Enemy(this.gameModules, this);
         // this.gameModules.hitspark = new hitspark(this.gameModules, this);
