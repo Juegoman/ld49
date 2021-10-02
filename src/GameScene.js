@@ -2,6 +2,7 @@ import grassImage from './assets/grass.png';
 import sandImage from './assets/sand.png';
 import stoneImage from './assets/stone.png';
 import characterImage from './assets/dude.png';
+import barrelImage from './assets/barrel.png';
 
 import World from './World';
 import Player from './Player';
@@ -22,12 +23,15 @@ export default class GameScene extends Phaser.Scene {
         this.load.image('sand', sandImage);
         this.load.image('stone', stoneImage);
         this.load.image('grass', grassImage);
+        this.load.image('barrel', barrelImage);
         this.load.spritesheet('character', characterImage, { frameWidth: 125, frameHeight: 100 });
     }
 
     create () {
         this.gameModules.world = new World(this.gameModules, this);
         this.gameModules.player = new Player(this.gameModules, this);
+        this.add.sprite(280, 200, 'barrel');
+        this.add.sprite(390, 220, 'barrel');
         // this.gameModules.weapon = new Weapon(this.gameModules, this);
         // this.gameModules.enemy = new Enemy(this.gameModules, this);
         // this.gameModules.hitspark = new hitspark(this.gameModules, this);
