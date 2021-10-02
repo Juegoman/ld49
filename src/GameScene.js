@@ -22,7 +22,7 @@ export default class GameScene extends Phaser.Scene {
         this.load.image('sand', sandImage);
         this.load.image('stone', stoneImage);
         this.load.image('grass', grassImage);
-        this.load.spritesheet('character', characterImage, { frameWidth: 100, frameHeight: 100 });
+        this.load.spritesheet('character', characterImage, { frameWidth: 125, frameHeight: 100 });
     }
 
     create () {
