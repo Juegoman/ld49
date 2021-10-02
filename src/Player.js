@@ -78,8 +78,6 @@ export default class Player extends GameModule {
         } else if (this.cursors.right.isDown) {
             this.direction.right = true;
         }
-        console.log(this.cursors.up.isDown, this.cursors.down.isDown, this.cursors.left.isDown, this.cursors.right.isDown)
-        console.log(this.direction);
 
          if (this.direction.up) {
              if (this.direction.left) {
