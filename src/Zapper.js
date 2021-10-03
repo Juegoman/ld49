@@ -29,15 +29,24 @@ export default class Zapper extends EnemyBase {
     get world() {
         return this.parent.world;
     }
+    get angry() {
+        return this.world && this.world.unstableCycles > 0;
+    }
     activate() {
         this.health = 1;
         this.sprite.setVisible(true);
         this.sprite.setActive(true);
-        this.sprite.play('zapper')
+        if (this.angry) {
+            this.vision = 400;
+            this.speed = 5;
+            if (this.world.unstableCycles > 0) this.speed += 9;
+            this.sprite.play({key: 'zapper', frameRate: 12});
+        } else {
+            this.sprite.play('zapper');
+        }
     }
     update() {
         if (!this.currentTile) {
-            console.log('poof')
             this.health = 0;
             this.sprite.setVisible(false);
             this.sprite.setActive(false);

@@ -18,12 +18,6 @@ export default class Player extends GameModule {
         this.scene = scene;
         this.sprite = scene.add.sprite(400, 300, 'character', 0);
         this.UI.uiCameraIgnore(this.sprite);
-        this.cursors = scene.input.keyboard.addKeys({
-            'up': Phaser.Input.Keyboard.KeyCodes.W,
-            'down': Phaser.Input.Keyboard.KeyCodes.S,
-            'left': Phaser.Input.Keyboard.KeyCodes.A,
-            'right': Phaser.Input.Keyboard.KeyCodes.D
-        });
         this.direction = {
             up: false,
             down: false,
@@ -31,6 +25,21 @@ export default class Player extends GameModule {
             right: false,
             lastDir: 'S',
         };
+        this.cursors = scene.input.keyboard.addKeys({
+            'up': Phaser.Input.Keyboard.KeyCodes.W,
+            'down': Phaser.Input.Keyboard.KeyCodes.S,
+            'left': Phaser.Input.Keyboard.KeyCodes.A,
+            'right': Phaser.Input.Keyboard.KeyCodes.D
+        });
+        this.cursors.up.on('down', () => { this.direction.up = true; });
+        this.cursors.up.on('up', () => { this.direction.up = false; });
+        this.cursors.down.on('down', () => { this.direction.down = true; });
+        this.cursors.down.on('up', () => { this.direction.down = false; });
+        this.cursors.left.on('down', () => { this.direction.left = true; });
+        this.cursors.left.on('up', () => { this.direction.left = false; });
+        this.cursors.right.on('down', () => { this.direction.right = true; });
+        this.cursors.right.on('up', () => { this.direction.right = false; });
+
         this.speed = 2;
         this.rumbleTime = 15;
         this.stun = 0;
@@ -132,25 +141,7 @@ export default class Player extends GameModule {
         }
     }
 
-    setDirection() {
-        this.direction = {
-            up: false,
-            down: false,
-            left: false,
-            right: false,
-            lastDir: this.direction.lastDir,
-        };
-        if (this.cursors.up.isDown) {
-            this.direction.up = true;
-        } else if (this.cursors.down.isDown) {
-            this.direction.down = true;
-        }
-        if (this.cursors.left.isDown) {
-            this.direction.left = true;
-        } else if (this.cursors.right.isDown) {
-            this.direction.right = true;
-        }
-    
+    setDirection() {    
         let dir = '';
         dir += this.direction.up ? 'N' : this.direction.down ? 'S' : '';
         dir += this.direction.left ? 'W' : this.direction.right ? 'E' : '';

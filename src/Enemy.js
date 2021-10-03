@@ -9,7 +9,7 @@ export default class Enemy extends GameModule {
         super(gameModules);
         this.scene = scene;
         this.enemyList = [];
-        this.zappers = [...(new Array(50)).keys()]
+        this.zappers = [...(new Array(100)).keys()]
             .map((_,v) => new Zapper(v, this));
         gameModules.UI.uiCameraIgnore(this.zappers.map(z => z.sprite));
         
@@ -44,6 +44,12 @@ export default class Enemy extends GameModule {
     }
     populate(gridCoords) {
         let rng = getRndInteger(2, 4);
+        if (this.world && this.world.unstableCycles > 5) {
+            rng = getRndInteger(3, 5);
+        }
+        if (this.world && this.world.unstableCycles > 10) {
+            rng = getRndInteger(4, 5 + Math.floor(this.world.unstableCycles / 5));
+        }
         const coords = getCoordinates(gridCoords);
         const wBound = coords.x - 250;
         const eBound = coords.x + 250;
@@ -52,7 +58,6 @@ export default class Enemy extends GameModule {
         let zapper;
         while (rng) {
             zapper = this.zappers.pop();
-            console.log(this.zappers, zapper, this.enemyList)
             zapper.spawn({ x: getRndInteger(wBound, eBound), y: getRndInteger(nBound, sBound) });
             this.enemyList.push(zapper);
             rng--;

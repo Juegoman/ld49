@@ -22,12 +22,19 @@ export default class World extends GameModule {
 
         this.activeTiles = [];
 
+        this.cullingReversed = false;
+
         this.unstableCycles = 0;
         this.isUnstable = false;
         const unstableTick = () => {
             if (!this.isUnstable) {
                 this.isUnstable = true;
                 // CALM -> UNSTABLE
+                // is reversed
+                this.cullingReversed = !getRndInteger(0, 1);
+                if (this.cullingReversed) {
+                    this.activeTiles.reverse();
+                }
                 // add 2 tiles
                 this.addTiles(5);
                 // mark 2 tiles for cull
@@ -42,7 +49,7 @@ export default class World extends GameModule {
                 this.unstableCycles += 1;
             }
         }
-        this.cycleTick = scene.time.addEvent({ delay: 5000, repeat: -1, callback: unstableTick });
+        this.cycleTick = scene.time.addEvent({ delay: 4000, repeat: -1, callback: unstableTick });
 
         this.addTiles();
     }
