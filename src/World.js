@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import GameModule from './GameModule';
 import getRndInteger from './getRndInteger';
+import Tile from './Tile';
 
 export default class World extends GameModule {
     constructor(gameModules, scene) {
@@ -8,24 +9,43 @@ export default class World extends GameModule {
         this.scene = scene;
 
         this.tiles = [
-            scene.add.image(0, 0, 'grass').setActive(false).setVisible(false),
-            scene.add.image(0, 0, 'grass').setActive(false).setVisible(false),
-            scene.add.image(0, 0, 'stone').setActive(false).setVisible(false),
-            scene.add.image(0, 0, 'stone').setActive(false).setVisible(false),
-            scene.add.image(0, 0, 'sand').setActive(false).setVisible(false),
-            scene.add.image(0, 0, 'sand').setActive(false).setVisible(false),
+            new Tile(this, { type: 'grass' }),
+            new Tile(this, { type: 'grass' }),
+            new Tile(this, { type: 'stone' }),
+            new Tile(this, { type: 'stone' }),
+            new Tile(this, { type: 'sand' }),
+            new Tile(this, { type: 'sand' }),
         ];
+        this.UI.uiCameraIgnore(this.tiles.map(tile => tile.image));
         this.shuffleTiles();
 
         this.activeTiles = [];
 
-        this.cycleState = 'CALM';
-        this.cycleTick = scene.time.addEvent({ delay: 30000, repeat: -1});
-        this.tiles.forEach(tile => this.UI.uiCameraIgnore(tile));
+        this.isUnstable = false;
+        const unstableTick = () => {
+            console.log('tick')
+            if (!this.isUnstable) {
+                this.isUnstable = true;
+                // CALM -> UNSTABLE
+                // add 2 tiles
+                this.addTiles(5);
+                // mark 2 tiles for cull
+                this.activeTiles[0].preCull();
+                this.activeTiles[1].preCull();
+            } else {
+                this.isUnstable = false;
+                // UNSTABLE -> CALM
+                // cull the unstable tiles
+            }
+        }
+        this.cycleTick = scene.time.addEvent({ delay: 10000, repeat: -1, callback: unstableTick });
 
         this.addTiles();
     }
     update() {
+        this.activeTiles.forEach(tile => {
+            tile.update();
+        });
     }
     shuffleTiles() {
         for (let i = this.tiles.length - 1; i > 0; i--) {
@@ -33,27 +53,27 @@ export default class World extends GameModule {
             [this.tiles[i], this.tiles[j]] = [this.tiles[j], this.tiles[i]];
         }
     }
-    addTiles() {
+    addTiles(finalCount = 3) {
         let tile;
-        while (this.activeTiles.length < 3) {
+        while (this.activeTiles.length < finalCount) {
             tile = this.tiles.pop();
-            tile.setActive(true);
-            tile.setVisible(true);
-            let x, y;
-            if (!this.activeTiles.length) {
-                ({x, y} = this.getCoordinates({x: 0, y: 0}));
-            } else {
+            let coords = {x: 0, y: 0};
+            if (this.activeTiles.length) {
                 // get last placed
                 const last = this.activeTiles[this.activeTiles.length - 1];
-                // find open tile spaces
-                const openDirections = Object.entries(this.getTileNeighbors(last))
-                    .filter(([, tile]) => tile === undefined)
+                // find open tile spaces with an occupied NSEW neighbor
+                const openDirections = Object.entries(this.getTileNeighbors(this.getGridCoordinates(last)))
+                    .filter(([dir, gridCoords]) => {
+                        const coordNeighbors = this.getTileNeighbors(gridCoords, true);
+                        return this.getTile(gridCoords) === undefined &&
+                          Object.values(coordNeighbors).some(tile => this.getTile(tile) !== undefined);
+                    })
                     .map(([dir]) => dir);
                 // pick one and place there
                 const dir = openDirections[getRndInteger(0, openDirections.length - 1)];
-                ({x, y} = this.getCoordinates(this.moveCoords(this.getGridCoordinates(last), dir)));
+                coords = this.moveCoords(this.getGridCoordinates(last), dir);
             }
-            tile.setPosition(x, y);
+            tile.activate(coords);
             this.activeTiles.push(tile);
         }
     }
@@ -75,27 +95,32 @@ export default class World extends GameModule {
         const { x, y } = this.getCoordinates(gridCoords);
         return this.activeTiles.find(tile => tile.x === x && tile.y === y);
     }
-    getTileNeighbors(tile) {
-        const {x, y} = this.getGridCoordinates(tile);
+    getTileNeighbors(gridCoords, nsewOnly = false) {
+        if (nsewOnly) {
+            return {
+                N: this.moveCoords(gridCoords, 'N'),
+                S: this.moveCoords(gridCoords, 'S'),
+                E: this.moveCoords(gridCoords, 'E'),
+                W: this.moveCoords(gridCoords, 'W'),
+            }
+        }
         return {
-            N: this.getTile({x, y: y - 1}),
-            S: this.getTile({x, y: y + 1}),
-            E: this.getTile({x: x + 1, y}),
-            W: this.getTile({x: x - 1, y}),
+            N: this.moveCoords(gridCoords, 'N'),
+            NE: this.moveCoords(gridCoords, 'NE'),
+            NW: this.moveCoords(gridCoords, 'NW'),
+            S: this.moveCoords(gridCoords, 'S'),
+            SE: this.moveCoords(gridCoords, 'SE'),
+            SW: this.moveCoords(gridCoords, 'SW'),
+            E: this.moveCoords(gridCoords, 'E'),
+            W: this.moveCoords(gridCoords, 'W'),
         };
     }
     moveCoords({x, y}, dir) {
-        switch (dir) {
-            case 'N':
-                return { x, y: y - 1 };
-            case 'S':
-                return {x, y: y + 1};
-            case 'E':
-                return {x: x + 1, y};
-            case 'W':
-                return {x: x - 1, y};
-            default:
-                return {x, y};
-        }
+        let result = {x, y};
+        if (dir.includes('N')) result.y -= 1;
+        if (dir.includes('S')) result.y += 1;
+        if (dir.includes('E')) result.x += 1;
+        if (dir.includes('W')) result.x -= 1;
+        return result;
     }
 }

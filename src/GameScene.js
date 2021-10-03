@@ -3,6 +3,7 @@ import sandImage from './assets/sand.png';
 import stoneImage from './assets/stone.png';
 import characterImage from './assets/dude.png';
 import barrelImage from './assets/barrel.png';
+import shatteringImage from './assets/shattering.png';
 
 import World from './World';
 import Player from './Player';
@@ -26,6 +27,7 @@ export default class GameScene extends Phaser.Scene {
         this.load.image('stone', stoneImage);
         this.load.image('grass', grassImage);
         this.load.image('barrel', barrelImage);
+        this.load.image('shattering', shatteringImage);
         this.load.spritesheet('character', characterImage, { frameWidth: 125, frameHeight: 100 });
     }
 

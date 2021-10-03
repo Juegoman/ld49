@@ -69,6 +69,9 @@ export default class Player extends GameModule {
     update() {
         this.setDirection();
         this.setPosition();
+        if (this.world.getTile(this.world.getGridCoordinates({x: this.sprite.x, y: this.sprite.y + 30})).toBeCulled) {
+            this.scene.cameras.main.shake(10);
+        }
     }
 
     setPosition() {
@@ -79,7 +82,9 @@ export default class Player extends GameModule {
         dx += this.direction.right ? this.speed : 0;
         dy += this.direction.up ? -1 * this.speed : 0;
         dy += this.direction.down ? this.speed: 0;
-        this.sprite.setPosition(x + dx, y + dy);
+        if (this.world.getTile(this.world.getGridCoordinates({x: x + dx, y: y + dy + 30})) !== undefined) {
+            this.sprite.setPosition(x + dx, y + dy);
+        }
     }
 
     setDirection() {
