@@ -5,6 +5,8 @@ import characterImage from './assets/dude.png';
 import barrelImage from './assets/barrel.png';
 import shatteringImage from './assets/shattering.png';
 
+import rumble from './assets/rumble.wav';
+
 import World from './World';
 import Player from './Player';
 import UI from './UI';
@@ -28,6 +30,7 @@ export default class GameScene extends Phaser.Scene {
         this.load.image('grass', grassImage);
         this.load.image('barrel', barrelImage);
         this.load.image('shattering', shatteringImage);
+        this.load.audio('rumble', rumble);
         this.load.spritesheet('character', characterImage, { frameWidth: 125, frameHeight: 100 });
     }
 
