@@ -12,7 +12,7 @@ export default class UI extends GameModule {
     }
     update() {
         const totalSecondsElapsed = Math.floor(this.world.cycleTick.elapsed / 1000);
-        this.timerText.setText(10 - totalSecondsElapsed);
+        this.timerText.setText(5 - totalSecondsElapsed);
         this.statusText.setText(this.world.isUnstable ? 'UNSTABLE' : 'CALM');
     }
     uiCameraIgnore(obj) {

@@ -1,10 +1,11 @@
 import getRndInteger from "./getRndInteger";
+import { getCoordinates } from "./worldUtils";
 
 export default class Tile {
     constructor(world, { type }) {
         this.world = world;
         this.type = type;
-        this.image = world.scene.add.image(0, 0, type).setActive(false).setVisible(false);
+        this.image = world.scene.add.image(0, 0, type).setActive(false).setVisible(false).setDepth(-1);
         this.mask = world.scene.make.image({ x: 0, y: 0, key: 'shattering', add: false });
         this.toBeCulled = false;
     }
@@ -18,11 +19,15 @@ export default class Tile {
             this.mask.setPosition(0, 0);
         }
     }
-    activate(gridCoords) {
+    activate(gridCoords, noEnemies = false) {
         this.image.setActive(true);
         this.image.setVisible(true);
-        const {x, y} = this.world.getCoordinates(gridCoords);
+        const {x, y} = getCoordinates(gridCoords);
         this.image.setPosition(x, y);
+        // populate enemies
+        if (!noEnemies) {
+            this.world.enemy.populate(gridCoords);
+        }
         return this;
     }
     preCull() {
@@ -30,6 +35,7 @@ export default class Tile {
         return this;
     }
     cull() {
+        this.initial =
         this.toBeCulled = false;
         this.image.setActive(false);
         this.image.setVisible(false);
@@ -40,7 +46,7 @@ export default class Tile {
         const wBound = this.image.x - 300;
         const eBound = this.image.x + 300;
         const nBound = this.image.y - 200;
-        const sBound = this.image.y + 200;
+        const sBound = this.image.ya + 200;
         return wBound < x && x < eBound &&
             nBound < y && y < sBound;
     }

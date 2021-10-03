@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import GameModule from './GameModule';
+import { getGridCoordinates } from './worldUtils';
 
 const FRAMES = {
     N: 0,
@@ -30,8 +31,11 @@ export default class Player extends GameModule {
             right: false,
             lastDir: 'S',
         };
-        this.speed = 3
+        this.speed = 2;
         this.rumbleTime = 15;
+        this.stun = 0;
+        this.knockbackDirection = { x: 0, y: 0 };
+        this.knockbackSpeed = 2;
         
         scene.anims.create({
             key: 'N',
@@ -71,30 +75,50 @@ export default class Player extends GameModule {
     }
 
     update() {
-        if (!this.currentTile) {
-            this.alive = false;
-            this.sprite.setVisible(false);
-        }
-
-        this.setDirection();
-        this.setPosition();
-
-        if (this.currentTile && this.currentTile.toBeCulled) {
-            this.scene.cameras.main.shake(10);
-            if (this.rumbleTime === RUMBLETIME) {
-                this.scene.sound.play('rumble', { volume: 0.25 });
-                this.rumbleTime = 0;
+        if (this.alive) {
+            if (!this.currentTile) {
+                this.alive = false;
+                this.sprite.setVisible(false);
+            }
+    
+            if (this.stun) {
+                this.setStunPosition();
+                this.stun -= 1;
             } else {
-                this.rumbleTime += 1;
+                this.setDirection();
+                this.setPosition();
+            }
+    
+            if (this.currentTile && this.currentTile.toBeCulled) {
+                this.scene.cameras.main.shake(10);
+                if (this.rumbleTime === RUMBLETIME) {
+                    this.scene.sound.play('rumble', { volume: 0.25 });
+                    this.rumbleTime = 0;
+                } else {
+                    this.rumbleTime += 1;
+                }
             }
         }
     }
 
     get currentTile() {
-        const tile = this.world.getTile(this.world.getGridCoordinates({x: this.sprite.x, y: this.sprite.y + 30}));
+        const tile = this.world.getTile(getGridCoordinates({x: this.sprite.x, y: this.sprite.y + 30}));
         return tile || null;
     }
-
+    get x() {
+        return this.sprite.x
+    }
+    get y() {
+        return this.sprite.y
+    }
+    hit(direction) {
+        this.stun = 50;
+        this.knockbackDirection = direction;
+    }
+    setStunPosition() {
+        const { x, y } = this.sprite;
+        this.sprite.setPosition(x + (this.knockbackDirection.x * this.knockbackSpeed), y + this.knockbackDirection.y * this.knockbackSpeed);
+    }
     setPosition() {
         const { x, y } = this.sprite;
         let dx = 0;
@@ -103,7 +127,7 @@ export default class Player extends GameModule {
         dx += this.direction.right ? this.speed : 0;
         dy += this.direction.up ? -1 * this.speed : 0;
         dy += this.direction.down ? this.speed: 0;
-        if (this.world.getTile(this.world.getGridCoordinates({x: x + dx, y: y + dy + 30})) !== undefined) {
+        if (this.world.getTile(getGridCoordinates({x: x + dx, y: y + dy + 30})) !== undefined) {
             this.sprite.setPosition(x + dx, y + dy);
         }
     }

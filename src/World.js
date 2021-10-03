@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import GameModule from './GameModule';
 import getRndInteger from './getRndInteger';
 import Tile from './Tile';
+import { getCoordinates, getGridCoordinates, moveCoords, getTileNeighbors } from './worldUtils';
 
 export default class World extends GameModule {
     constructor(gameModules, scene) {
@@ -21,6 +22,7 @@ export default class World extends GameModule {
 
         this.activeTiles = [];
 
+        this.unstableCycles = 0;
         this.isUnstable = false;
         const unstableTick = () => {
             if (!this.isUnstable) {
@@ -37,9 +39,10 @@ export default class World extends GameModule {
                 // cull the unstable tiles
                 this.tiles.push(this.activeTiles.shift().cull())
                 this.tiles.push(this.activeTiles.shift().cull())
+                this.unstableCycles += 1;
             }
         }
-        this.cycleTick = scene.time.addEvent({ delay: 10000, repeat: -1, callback: unstableTick });
+        this.cycleTick = scene.time.addEvent({ delay: 5000, repeat: -1, callback: unstableTick });
 
         this.addTiles();
     }
@@ -64,53 +67,24 @@ export default class World extends GameModule {
                 // get last placed
                 const last = this.activeTiles[this.activeTiles.length - 1];
                 // find open tile spaces with an occupied NSEW neighbor
-                const openDirections = Object.entries(this.getTileNeighbors(this.getGridCoordinates(last)))
+                const openDirections = Object.entries(getTileNeighbors(getGridCoordinates(last)))
                     .filter(([dir, gridCoords]) => {
-                        const coordNeighbors = this.getTileNeighbors(gridCoords);
+                        const coordNeighbors = getTileNeighbors(gridCoords);
                         return this.getTile(gridCoords) === undefined &&
                           Object.values(coordNeighbors).some(tile => this.getTile(tile) !== undefined);
                     })
                     .map(([dir]) => dir);
                 // pick one and place there
                 const dir = openDirections[getRndInteger(0, openDirections.length - 1)];
-                coords = this.moveCoords(this.getGridCoordinates(last), dir);
+                coords = moveCoords(getGridCoordinates(last), dir);
             }
-            tile.activate(coords);
+            tile.activate(coords, this.activeTiles.length === 0);
             this.activeTiles.push(tile);
         }
     }
-    // return xy coords for the center of a grid point
-    getCoordinates({x, y}) {
-        return {
-            x: 400 + (x * 600),
-            y: 300 + (y * 400),
-        }
-    }
-    // given xy coords for center of grid point returns corresponding grid point coords
-    getGridCoordinates({x, y}) {
-        return {
-            x: Math.round((x - 400) / 600),
-            y: Math.round((y - 300) / 400),
-        }
-    }
+
     getTile(gridCoords) {
-        const { x, y } = this.getCoordinates(gridCoords);
+        const { x, y } = getCoordinates(gridCoords);
         return this.activeTiles.find(tile => tile.x === x && tile.y === y);
-    }
-    getTileNeighbors(gridCoords) {
-        return {
-            N: this.moveCoords(gridCoords, 'N'),
-            S: this.moveCoords(gridCoords, 'S'),
-            E: this.moveCoords(gridCoords, 'E'),
-            W: this.moveCoords(gridCoords, 'W'),
-        }
-    }
-    moveCoords({x, y}, dir) {
-        let result = {x, y};
-        if (dir.includes('N')) result.y -= 1;
-        if (dir.includes('S')) result.y += 1;
-        if (dir.includes('E')) result.x += 1;
-        if (dir.includes('W')) result.x -= 1;
-        return result;
     }
 }
