@@ -12,9 +12,6 @@ export default class UI extends GameModule {
     }
     update() {
         const totalSecondsElapsed = Math.floor(this.world.cycleTick.elapsed / 1000);
-        // const minutes = Math.floor(totalSecondsElapsed / 60)
-        // const seconds = totalSecondsElapsed % 60;
-        // this.timerText.setText((minutes) ? `${minutes}:${(seconds < 10) ? '0' : ''}${seconds}` : seconds);
         this.timerText.setText(10 - totalSecondsElapsed);
         this.statusText.setText(this.world.isUnstable ? 'UNSTABLE' : 'CALM');
     }

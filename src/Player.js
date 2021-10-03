@@ -9,7 +9,7 @@ const FRAMES = {
     SE: 4,
 };
 
-const RUMBLETIME = 40;
+const RUMBLETIME = 50;
 
 export default class Player extends GameModule {
     constructor(gameModules, scene) {

@@ -10,6 +10,8 @@ import rumble from './assets/rumble.wav';
 import World from './World';
 import Player from './Player';
 import UI from './UI';
+import Enemy from './Enemy';
+import Weapon from './Weapon';
 
 export default class GameScene extends Phaser.Scene {
     constructor () {
@@ -18,8 +20,8 @@ export default class GameScene extends Phaser.Scene {
             world: null,
             player: null,
             UI: null,
-            // weapon: null,
-            // enemy: null,
+            weapon: null,
+            enemy: null,
             // hitspark: null,
         }
     }
@@ -38,8 +40,8 @@ export default class GameScene extends Phaser.Scene {
         this.gameModules.UI = new UI(this.gameModules, this);
         this.gameModules.world = new World(this.gameModules, this);
         this.gameModules.player = new Player(this.gameModules, this);
-        // this.gameModules.weapon = new Weapon(this.gameModules, this);
-        // this.gameModules.enemy = new Enemy(this.gameModules, this);
+        this.gameModules.weapon = new Weapon(this.gameModules, this);
+        this.gameModules.enemy = new Enemy(this.gameModules, this);
         // this.gameModules.hitspark = new hitspark(this.gameModules, this);
     }
 
@@ -57,8 +59,8 @@ export default class GameScene extends Phaser.Scene {
         //     this.sound.stopAll();
         //   }
         // }
-        // this.gameModules.weapon.update();
-        // this.gameModules.enemy.update();
+        this.gameModules.weapon.update();
+        this.gameModules.enemy.update();
         // this.gameModules.hitspark.update();
         this.gameModules.UI.update();
     }

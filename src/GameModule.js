@@ -11,12 +11,12 @@ export default class GameModule {
     get UI() {
         return this.gameModules.UI;
     }
-    // get weapon() {
-    //   return this.gameModules.weapon;
-    // }
-    // get enemy() {
-    //   return this.gameModules.enemy;
-    // }
+    get weapon() {
+      return this.gameModules.weapon;
+    }
+    get enemy() {
+      return this.gameModules.enemy;
+    }
     // get hitspark() {
     //   return this.gameModules.hitspark;
     // }
