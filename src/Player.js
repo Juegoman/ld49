@@ -9,6 +9,8 @@ const FRAMES = {
     SE: 4,
 };
 
+const RUMBLETIME = 40;
+
 export default class Player extends GameModule {
     constructor(gameModules, scene) {
         super(gameModules);
@@ -29,6 +31,7 @@ export default class Player extends GameModule {
             lastDir: 'S',
         };
         this.speed = 3
+        this.rumbleTime = 15;
         
         scene.anims.create({
             key: 'N',
@@ -78,6 +81,12 @@ export default class Player extends GameModule {
 
         if (this.currentTile && this.currentTile.toBeCulled) {
             this.scene.cameras.main.shake(10);
+            if (this.rumbleTime === RUMBLETIME) {
+                this.scene.sound.play('rumble', { volume: 0.25 });
+                this.rumbleTime = 0;
+            } else {
+                this.rumbleTime += 1;
+            }
         }
     }
 

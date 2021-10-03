@@ -23,7 +23,6 @@ export default class World extends GameModule {
 
         this.isUnstable = false;
         const unstableTick = () => {
-            console.log('tick')
             if (!this.isUnstable) {
                 this.isUnstable = true;
                 // CALM -> UNSTABLE

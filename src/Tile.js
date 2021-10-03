@@ -10,7 +10,6 @@ export default class Tile {
     }
     update() {
         if (this.toBeCulled && !this.image.mask) {
-            console.log(this.image.mask)
             this.image.mask = new Phaser.Display.Masks.BitmapMask(this.world.scene, this.mask);
             this.mask.setPosition(this.image.x, this.image.y);
             this.mask.setFlip(getRndInteger(0, 1), getRndInteger(0, 1));
