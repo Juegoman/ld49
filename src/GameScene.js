@@ -4,6 +4,7 @@ import stoneImage from './assets/stone.png';
 import characterImage from './assets/dude.png';
 import barrelImage from './assets/barrel.png';
 import shatteringImage from './assets/shattering.png';
+import zapperImage from './assets/zapper.png';
 
 import rumble from './assets/rumble.wav';
 
@@ -34,6 +35,7 @@ export default class GameScene extends Phaser.Scene {
         this.load.image('shattering', shatteringImage);
         this.load.audio('rumble', rumble);
         this.load.spritesheet('character', characterImage, { frameWidth: 125, frameHeight: 100 });
+        this.load.spritesheet('zapper', zapperImage, { frameWidth: 125, frameHeight: 100 })
     }
 
     create () {
