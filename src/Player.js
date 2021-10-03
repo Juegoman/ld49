@@ -16,10 +16,10 @@ export default class Player extends GameModule {
         this.sprite = scene.add.sprite(400, 300, 'character', 0);
         this.UI.uiCameraIgnore(this.sprite);
         this.cursors = scene.input.keyboard.addKeys({
-          'up': Phaser.Input.Keyboard.KeyCodes.W,
-          'down': Phaser.Input.Keyboard.KeyCodes.S,
-          'left': Phaser.Input.Keyboard.KeyCodes.A,
-          'right': Phaser.Input.Keyboard.KeyCodes.D
+            'up': Phaser.Input.Keyboard.KeyCodes.W,
+            'down': Phaser.Input.Keyboard.KeyCodes.S,
+            'left': Phaser.Input.Keyboard.KeyCodes.A,
+            'right': Phaser.Input.Keyboard.KeyCodes.D
         });
         this.direction = {
             up: false,
@@ -29,7 +29,7 @@ export default class Player extends GameModule {
             lastDir: 'S',
         };
         this.speed = 3
-
+        
         scene.anims.create({
             key: 'N',
             frames: scene.anims.generateFrameNumbers('character', {frames: [0]}),
@@ -61,17 +61,29 @@ export default class Player extends GameModule {
             repeat: -1,
         });
         this.sprite.play('S');
-
+        
         scene.cameras.main.startFollow(this.sprite, false, 0.5, 0.5);
-
+        
+        this.alive = true;
     }
 
     update() {
+        if (!this.currentTile) {
+            this.alive = false;
+            this.sprite.setVisible(false);
+        }
+
         this.setDirection();
         this.setPosition();
-        if (this.world.getTile(this.world.getGridCoordinates({x: this.sprite.x, y: this.sprite.y + 30})).toBeCulled) {
+
+        if (this.currentTile && this.currentTile.toBeCulled) {
             this.scene.cameras.main.shake(10);
         }
+    }
+
+    get currentTile() {
+        const tile = this.world.getTile(this.world.getGridCoordinates({x: this.sprite.x, y: this.sprite.y + 30}));
+        return tile || null;
     }
 
     setPosition() {

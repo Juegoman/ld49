@@ -13,7 +13,10 @@ export default class Tile {
             console.log(this.image.mask)
             this.image.mask = new Phaser.Display.Masks.BitmapMask(this.world.scene, this.mask);
             this.mask.setPosition(this.image.x, this.image.y);
-            this.mask.setFlipX(getRndInteger(0, 1));
+            this.mask.setFlip(getRndInteger(0, 1), getRndInteger(0, 1));
+        } else if (!this.toBeCulled && this.image.mask) {
+            this.image.mask = null;
+            this.mask.setPosition(0, 0);
         }
     }
     activate(gridCoords) {
@@ -21,15 +24,18 @@ export default class Tile {
         this.image.setVisible(true);
         const {x, y} = this.world.getCoordinates(gridCoords);
         this.image.setPosition(x, y);
+        return this;
     }
     preCull() {
         this.toBeCulled = true;
+        return this;
     }
     cull() {
         this.toBeCulled = false;
         this.image.setActive(false);
         this.image.setVisible(false);
         this.image.setPosition(0, 0);
+        return this;
     }
     contains({x, y}) {
         const wBound = this.image.x - 300;

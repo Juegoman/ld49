@@ -36,6 +36,8 @@ export default class World extends GameModule {
                 this.isUnstable = false;
                 // UNSTABLE -> CALM
                 // cull the unstable tiles
+                this.tiles.push(this.activeTiles.shift().cull())
+                this.tiles.push(this.activeTiles.shift().cull())
             }
         }
         this.cycleTick = scene.time.addEvent({ delay: 10000, repeat: -1, callback: unstableTick });
@@ -55,6 +57,7 @@ export default class World extends GameModule {
     }
     addTiles(finalCount = 3) {
         let tile;
+        this.shuffleTiles();
         while (this.activeTiles.length < finalCount) {
             tile = this.tiles.pop();
             let coords = {x: 0, y: 0};
@@ -64,7 +67,7 @@ export default class World extends GameModule {
                 // find open tile spaces with an occupied NSEW neighbor
                 const openDirections = Object.entries(this.getTileNeighbors(this.getGridCoordinates(last)))
                     .filter(([dir, gridCoords]) => {
-                        const coordNeighbors = this.getTileNeighbors(gridCoords, true);
+                        const coordNeighbors = this.getTileNeighbors(gridCoords);
                         return this.getTile(gridCoords) === undefined &&
                           Object.values(coordNeighbors).some(tile => this.getTile(tile) !== undefined);
                     })
@@ -95,25 +98,13 @@ export default class World extends GameModule {
         const { x, y } = this.getCoordinates(gridCoords);
         return this.activeTiles.find(tile => tile.x === x && tile.y === y);
     }
-    getTileNeighbors(gridCoords, nsewOnly = false) {
-        if (nsewOnly) {
-            return {
-                N: this.moveCoords(gridCoords, 'N'),
-                S: this.moveCoords(gridCoords, 'S'),
-                E: this.moveCoords(gridCoords, 'E'),
-                W: this.moveCoords(gridCoords, 'W'),
-            }
-        }
+    getTileNeighbors(gridCoords) {
         return {
             N: this.moveCoords(gridCoords, 'N'),
-            NE: this.moveCoords(gridCoords, 'NE'),
-            NW: this.moveCoords(gridCoords, 'NW'),
             S: this.moveCoords(gridCoords, 'S'),
-            SE: this.moveCoords(gridCoords, 'SE'),
-            SW: this.moveCoords(gridCoords, 'SW'),
             E: this.moveCoords(gridCoords, 'E'),
             W: this.moveCoords(gridCoords, 'W'),
-        };
+        }
     }
     moveCoords({x, y}, dir) {
         let result = {x, y};
