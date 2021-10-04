@@ -16,7 +16,7 @@ export default class Player extends GameModule {
     constructor(gameModules, scene) {
         super(gameModules);
         this.scene = scene;
-        this.sprite = scene.add.sprite(400, 300, 'character', 0);
+        this.sprite = scene.add.sprite(400, 300, 'character', 0).setDepth(1);
         this.UI.uiCameraIgnore(this.sprite);
         this.direction = {
             up: false,
@@ -25,11 +25,13 @@ export default class Player extends GameModule {
             right: false,
             lastDir: 'S',
         };
+
         this.cursors = scene.input.keyboard.addKeys({
             'up': Phaser.Input.Keyboard.KeyCodes.W,
             'down': Phaser.Input.Keyboard.KeyCodes.S,
             'left': Phaser.Input.Keyboard.KeyCodes.A,
-            'right': Phaser.Input.Keyboard.KeyCodes.D
+            'right': Phaser.Input.Keyboard.KeyCodes.D,
+            'space': Phaser.Input.Keyboard.KeyCodes.SPACE,
         });
         this.cursors.up.on('down', () => { this.direction.up = true; });
         this.cursors.up.on('up', () => { this.direction.up = false; });
@@ -39,12 +41,20 @@ export default class Player extends GameModule {
         this.cursors.left.on('up', () => { this.direction.left = false; });
         this.cursors.right.on('down', () => { this.direction.right = true; });
         this.cursors.right.on('up', () => { this.direction.right = false; });
+        this.cursors.space.on('down', () => { this.boosting = true; })
+        this.cursors.space.on('up', () => { this.boosting = false; })
 
         this.speed = 2;
         this.rumbleTime = 15;
         this.stun = 0;
         this.knockbackDirection = { x: 0, y: 0 };
         this.knockbackSpeed = 2;
+        this.boosting = false;
+        this.MAXENERGY = 500;
+        this.energy = 500;
+        this.energyRate = 1;
+        this.boostDrain = 5;
+        this.boostSpeed = 4;
         
         scene.anims.create({
             key: 'N',
@@ -95,8 +105,15 @@ export default class Player extends GameModule {
                 this.stun -= 1;
             } else {
                 this.setDirection();
-                this.setPosition();
+                if (this.boosting && (this.direction.up || this.direction.down || this.direction.left || this.direction.right)) {
+                    this.energy -= (this.energy < this.energyRate) ? this.energy : this.boostDrain;
+                    this.setPosition(this.actuallyBoosting);
+                } else {
+                    this.setPosition(false);
+                }
             }
+
+            this.energy = (this.energy === this.MAXENERGY) ? this.MAXENERGY : this.energy + this.energyRate
     
             if (this.currentTile && this.currentTile.toBeCulled) {
                 this.scene.cameras.main.shake(10);
@@ -120,6 +137,9 @@ export default class Player extends GameModule {
     get y() {
         return this.sprite.y
     }
+    get actuallyBoosting() {
+        return this.boosting && this.energy >= this.boostDrain * 10;
+    }
     hit(direction) {
         this.stun = 50;
         this.knockbackDirection = direction;
@@ -128,14 +148,15 @@ export default class Player extends GameModule {
         const { x, y } = this.sprite;
         this.sprite.setPosition(x + (this.knockbackDirection.x * this.knockbackSpeed), y + this.knockbackDirection.y * this.knockbackSpeed);
     }
-    setPosition() {
+    setPosition(boosting) {
         const { x, y } = this.sprite;
         let dx = 0;
         let dy = 0;
-        dx += this.direction.left ? -1 * this.speed : 0;
-        dx += this.direction.right ? this.speed : 0;
-        dy += this.direction.up ? -1 * this.speed : 0;
-        dy += this.direction.down ? this.speed: 0;
+        const speed = (boosting) ? this.boostSpeed : this.speed;
+        dx += this.direction.left ? -1 * speed : 0;
+        dx += this.direction.right ? speed : 0;
+        dy += this.direction.up ? -1 * speed : 0;
+        dy += this.direction.down ? speed: 0;
         if (this.world.getTile(getGridCoordinates({x: x + dx, y: y + dy + 30})) !== undefined) {
             this.sprite.setPosition(x + dx, y + dy);
         }
