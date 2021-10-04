@@ -28,6 +28,7 @@ export default class World extends GameModule {
         this.isUnstable = false;
         const unstableTick = () => {
             if (!this.isUnstable) {
+                scene.sound.play('rumble');
                 this.isUnstable = true;
                 // CALM -> UNSTABLE
                 // is reversed
