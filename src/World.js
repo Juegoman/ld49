@@ -46,7 +46,7 @@ export default class World extends GameModule {
                 // cull the unstable tiles
                 this.tiles.push(this.activeTiles.shift().cull())
                 this.tiles.push(this.activeTiles.shift().cull())
-                this.unstableCycles += 1;
+                if (this.player.alive) this.unstableCycles += 1;
             }
         }
         this.cycleTick = scene.time.addEvent({ delay: 4000, repeat: -1, callback: unstableTick });

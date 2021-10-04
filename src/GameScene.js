@@ -5,6 +5,7 @@ import characterImage from './assets/dude.png';
 import barrelImage from './assets/barrel.png';
 import shatteringImage from './assets/shattering.png';
 import zapperImage from './assets/zapper.png';
+import sparkImage from './assets/spark.png';
 
 import rumble from './assets/rumble.wav';
 
@@ -13,6 +14,7 @@ import Player from './Player';
 import UI from './UI';
 import Enemy from './Enemy';
 import Weapon from './Weapon';
+import Hitspark from './Hitspark';
 
 export default class GameScene extends Phaser.Scene {
     constructor () {
@@ -23,7 +25,7 @@ export default class GameScene extends Phaser.Scene {
             UI: null,
             weapon: null,
             enemy: null,
-            // hitspark: null,
+            hitspark: null,
         }
     }
 
@@ -35,7 +37,8 @@ export default class GameScene extends Phaser.Scene {
         this.load.image('shattering', shatteringImage);
         this.load.audio('rumble', rumble);
         this.load.spritesheet('character', characterImage, { frameWidth: 125, frameHeight: 100 });
-        this.load.spritesheet('zapper', zapperImage, { frameWidth: 125, frameHeight: 100 })
+        this.load.spritesheet('zapper', zapperImage, { frameWidth: 125, frameHeight: 100 });
+        this.load.spritesheet('spark', sparkImage, { frameWidth: 30, frameHeight: 30 });
     }
 
     create () {
@@ -44,26 +47,37 @@ export default class GameScene extends Phaser.Scene {
         this.gameModules.weapon = new Weapon(this.gameModules, this);
         this.gameModules.enemy = new Enemy(this.gameModules, this);
         this.gameModules.world = new World(this.gameModules, this);
-        // this.gameModules.hitspark = new hitspark(this.gameModules, this);
+        this.gameModules.hitspark = new Hitspark(this.gameModules, this);
+        this.sys.canvas.addEventListener('click', () => {
+          if (this.sys.isPaused())  {
+            this.sys.resume();
+            // this.sound.play('song', { volume: 0.5, loop: true });
+          }
+        });
+        document.addEventListener('keypress', () => {
+            if (!this.gameModules.player.alive) {
+                this.gameModules.UI.cleanUpDeathText();
+                this.sound.stopAll();
+                this.scene.restart();
+            }
+        })
     }
 
     update () {
         this.gameModules.world.update();
         this.gameModules.player.update();
-        // if (this.input.mousePointer.primaryDown) {
-        //   if (this.input.mousePointer.x <= 800 &&
-        //     this.input.mousePointer.x >= 0 &&
-        //     this.input.mousePointer.y <= 600 &&
-        //     this.input.mousePointer.y >= 0) {
-        //     this.gameModules.weapon.attack(this.input.mousePointer.x, this.input.mousePointer.y);
-        //   } else if (!this.sys.isPaused()) {
-        //     this.sys.pause();
-        //     this.sound.stopAll();
-        //   }
-        // }
+        if (this.input.mousePointer.primaryDown) {
+          if (!(this.input.mousePointer.x <= 800 &&
+            this.input.mousePointer.x >= 0 &&
+            this.input.mousePointer.y <= 600 &&
+            this.input.mousePointer.y >= 0)) {
+            this.sys.pause();
+            this.sound.stopAll();
+          }
+        }
         this.gameModules.weapon.update();
         this.gameModules.enemy.update();
-        // this.gameModules.hitspark.update();
+        this.gameModules.hitspark.update();
         this.gameModules.UI.update();
     }
 }

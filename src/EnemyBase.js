@@ -14,4 +14,5 @@ export default class EnemyBase {
     get coords() { return {x: this.x, y: this.y}; }
     get player() { return this.parent.player; }
     get scene() { return this.parent.scene; }
+    get hitspark() { return this.parent.hitspark; }
 }

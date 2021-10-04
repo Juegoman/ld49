@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import EnemyBase from './EnemyBase';
+import getRndInteger from './getRndInteger';
 import { getGridCoordinates } from './worldUtils';
 
 export default class Zapper extends EnemyBase {
@@ -12,9 +13,9 @@ export default class Zapper extends EnemyBase {
         this.vision = 250;
         this.hurtbox = 50;
     }
-    spawn({x, y}) {
+    spawn({x, y}, angry = false) {
         this.sprite.setPosition(x, y);
-        this.activate()
+        this.activate(true, angry);
         return this;
     }
     hit() {
@@ -32,17 +33,20 @@ export default class Zapper extends EnemyBase {
     get angry() {
         return this.world && this.world.unstableCycles > 0;
     }
-    activate() {
-        this.health = 1;
-        this.sprite.setVisible(true);
-        this.sprite.setActive(true);
-        if (this.angry) {
-            this.vision = 400;
-            this.speed = 5;
-            if (this.world.unstableCycles > 0) this.speed += 9;
-            this.sprite.play({key: 'zapper', frameRate: 12});
-        } else {
-            this.sprite.play('zapper');
+    activate(value = true, angry = false) {
+        this.sleepTimer = 15;
+        this.sprite.setVisible(value);
+        this.sprite.setActive(value);
+        if (value) {
+            const rng = getRndInteger(1, 3);
+            this.health = 1;
+            if (this.angry) {
+                this.vision = 400;
+                this.speed = 14;
+                this.sprite.play({key: `zapper${rng}`, frameRate: 12});
+            } else {
+                this.sprite.play(`zapper${rng}`);
+            }
         }
     }
     update() {
@@ -70,6 +74,14 @@ export default class Zapper extends EnemyBase {
                     // if player in hurt radius then call this.player.hit()
                     const newPosDist = Math.sqrt((this.player.x - newPos.x)**2 + (this.player.y - newPos.y)**2);
                     if (newPosDist < this.hurtbox) {
+                        // get midpoint between player and self, then spawn 3 sparks with variance
+                        const midpoint = { x: newPos.x + (direction.x * (newPosDist / 2)), y: newPos.y + (direction.y * (newPosDist / 2))};
+                        const getRndPlsMns = () => ((getRndInteger(0, 1)) ? -1 : 1) * getRndInteger(0, 20);
+                        let count = 5;
+                        while (count) {
+                            this.hitspark.spawn(midpoint.x + getRndPlsMns(), midpoint.y + getRndPlsMns());
+                            count -= 1;
+                        }
                         this.player.hit(direction);
                     }
                 }
