@@ -9,8 +9,8 @@ export default class UI extends GameModule {
         this.uiCamera = scene.cameras.add();
         this.timerText = scene.add.text(630, 60, '', { font: '24px Courier', fill: '#FFFFFF' });
         this.statusText = scene.add.text(630, 30, '', { font: '24px Courier', fill: '#FFFFFF' });
-        this.cycleText = scene.add.text(630, 90, '', { font: '24px Courier', fill: '#FFFFFF' });
-        this.scoreText = scene.add.text(30, 90, '', { font: '24px Courier', fill: '#FFFFFF' });
+        this.cycleText = scene.add.text(630, 90, '', { font: '24px Courier', fill: '#FFFFFF' }).setDepth(11);
+        this.scoreText = scene.add.text(30, 90, '', { font: '24px Courier', fill: '#FFFFFF' }).setDepth(11);
         this.energyText = scene.add.text(30, 30, 'ENERGY', { font: '24px Courier', fill: '#FFFFFF' });
         this.energyBar = new Bar(scene, 120, 32);
         this.mainCameraIgnore([this.timerText, this.statusText, this.cycleText, this.energyBar.bar, this.scoreText, this.energyText]);
@@ -22,6 +22,10 @@ export default class UI extends GameModule {
         this.cycleText.setText(`Cycle: ${this.world.unstableCycles}`);
         this.energyBar.set(Math.floor((this.player.energy / this.player.MAXENERGY) * 100));
         this.scoreText.setText(`Score: ${this.score}`);
+        if (!this.player.alive) {
+            this.scoreText.setPosition(60, 180);
+            this.cycleText.setPosition(60, 210);
+        }
     }
     uiCameraIgnore(obj) {
         this.uiCamera.ignore(obj);
