@@ -6,7 +6,6 @@ import barrelImage from './assets/barrel.png';
 import shatteringImage from './assets/shattering.png';
 import zapperImage from './assets/zapper.png';
 import sparkImage from './assets/spark.png';
-import duderunImage from './assets/duderun.png'
 
 import rumble from './assets/rumble.wav';
 
@@ -35,20 +34,12 @@ export default class GameScene extends Phaser.Scene {
         this.load.image('barrel', barrelImage);
         this.load.image('shattering', shatteringImage);
         this.load.audio('rumble', rumble);
-        this.load.spritesheet('character', characterImage, { frameWidth: 125, frameHeight: 100 });
-        this.load.spritesheet('duderun', duderunImage, { frameWidth: 150, frameHeight: 150 });
+        this.load.spritesheet('character', characterImage, { frameWidth: 150, frameHeight: 150 });
         this.load.spritesheet('zapper', zapperImage, { frameWidth: 125, frameHeight: 100 });
         this.load.spritesheet('spark', sparkImage, { frameWidth: 30, frameHeight: 30 });
     }
 
     create () {
-        this.anims.create({
-            key: 'runtest',
-            frames: this.anims.generateFrameNumbers('duderun', { frames: [0, 1, 2, 3, 4, 5, 6] }),
-            frameRate: 10,
-            repeat: -1,
-        })
-        this.add.sprite(0,0, 'duderun', 0).play('runtest')
         this.gameModules.UI = new UI(this.gameModules, this);
         this.gameModules.player = new Player(this.gameModules, this);
         this.gameModules.enemy = new Enemy(this.gameModules, this);

@@ -2,13 +2,26 @@ import Phaser from 'phaser';
 import GameModule from './GameModule';
 import { getGridCoordinates } from './worldUtils';
 
-const FRAMES = {
-    N: 0,
-    S: 1,
-    E: 2,
-    NE: 3,
-    SE: 4,
+const direction_offset = {
+    E: 0,
+    NE: 1,
+    N: 2,
+    NW: 3,
+    W: 4,
+    SW: 5,
+    S: 6,
+    SE: 7,
 };
+const frame_offset = {
+    IDLE: [0, 1],
+    BOOST: [2, 3],
+    RUN: [4, 5, 6, 7, 8, 9],
+};
+const anim_framerate = {
+    IDLE: 4,
+    BOOST: 8,
+    RUN: 10,
+}
 
 const RUMBLETIME = 50;
 
@@ -56,37 +69,17 @@ export default class Player extends GameModule {
         this.boostDrain = 5;
         this.boostSpeed = 4;
         
-        scene.anims.create({
-            key: 'N',
-            frames: scene.anims.generateFrameNumbers('character', {frames: [0]}),
-            frameRate: 1,
-            repeat: -1,
-        });
-        scene.anims.create({
-            key: 'S',
-            frames: scene.anims.generateFrameNumbers('character', {frames: [1]}),
-            frameRate: 1,
-            repeat: -1,
-        });
-        scene.anims.create({
-            key: 'E',
-            frames: scene.anims.generateFrameNumbers('character', {frames: [2]}),
-            frameRate: 1,
-            repeat: -1,
-        });
-        scene.anims.create({
-            key: 'NE',
-            frames: scene.anims.generateFrameNumbers('character', {frames: [3]}),
-            frameRate: 1,
-            repeat: -1,
-        });
-        scene.anims.create({
-            key: 'SE',
-            frames: scene.anims.generateFrameNumbers('character', {frames: [4]}),
-            frameRate: 1,
-            repeat: -1,
-        });
-        this.sprite.play('S');
+        const animConfigs = Object.entries(direction_offset)
+            .flatMap(([dir, offset]) => Object.entries(frame_offset)
+                .map(([anim, f_offset]) => ({
+                    key: `${dir}_${anim}`,
+                    frames: scene.anims.generateFrameNumbers('character', { frames: f_offset.map(o => o + (10 * offset)) }),
+                    frameRate: anim_framerate[anim],
+                    repeat: -1,
+                })
+            ));
+        animConfigs.forEach(c => { scene.anims.create(c); });
+        this.sprite.play('S_IDLE');
         
         scene.cameras.main.startFollow(this.sprite, false, 0.5, 0.5);
         
@@ -128,7 +121,7 @@ export default class Player extends GameModule {
     }
 
     get currentTile() {
-        const tile = this.world.getTile(getGridCoordinates({x: this.sprite.x, y: this.sprite.y + 30}));
+        const tile = this.world.getTile(getGridCoordinates({x: this.sprite.x, y: this.sprite.y + 50}));
         return tile || null;
     }
     get x() {
@@ -157,9 +150,18 @@ export default class Player extends GameModule {
         dx += this.direction.right ? speed : 0;
         dy += this.direction.up ? -1 * speed : 0;
         dy += this.direction.down ? speed: 0;
-        if (this.world.getTile(getGridCoordinates({x: x + dx, y: y + dy + 30})) !== undefined) {
+        const canMove = this.world.getTile(getGridCoordinates({x: x + dx, y: y + dy + 50})) !== undefined;
+        if (canMove) {
             this.sprite.setPosition(x + dx, y + dy);
         }
+        if (boosting && canMove && this.sprite.anims.currentAnim && this.sprite.anims.currentAnim.key !== `${this.direction.lastDir}_BOOST`) {
+            this.sprite.play(`${this.direction.lastDir}_BOOST`);
+        } else if (!boosting && canMove && (dx || dy) && this.sprite.anims.currentAnim && this.sprite.anims.currentAnim.key !== `${this.direction.lastDir}_RUN`) {
+            this.sprite.play(`${this.direction.lastDir}_RUN`);
+        } else if (this.sprite.anims.currentAnim && this.sprite.anims.currentAnim.key !== `${this.direction.lastDir}_IDLE` && !(dx || dy)) {
+            this.sprite.play(`${this.direction.lastDir}_IDLE`);
+        }
+
     }
 
     setDirection() {    
@@ -170,28 +172,28 @@ export default class Player extends GameModule {
             dir = this.direction.lastDir;
         }
     
-        this.sprite.setFlipX(dir.indexOf('W') !== -1);
-        switch (dir) {
-            case 'N':
-                this.sprite.play('N');
-                break;
-            case 'NE':
-            case 'NW':
-                this.sprite.play('NE');
-                break;
-            case 'W':
-            case 'E':
-                this.sprite.play('E');
-                break;
-            case 'SW':
-            case 'SE':
-                this.sprite.play('SE');
-                break;
-            case 'S':
-                this.sprite.play('S');
-            default:
-                break;
-        }
+        // this.sprite.setFlipX(dir.indexOf('W') !== -1);
+        // switch (dir) {
+        //     case 'N':
+        //         this.sprite.play('N');
+        //         break;
+        //     case 'NE':
+        //     case 'NW':
+        //         this.sprite.play('NE');
+        //         break;
+        //     case 'W':
+        //     case 'E':
+        //         this.sprite.play('E');
+        //         break;
+        //     case 'SW':
+        //     case 'SE':
+        //         this.sprite.play('SE');
+        //         break;
+        //     case 'S':
+        //         this.sprite.play('S');
+        //     default:
+        //         break;
+        // }
         this.direction.lastDir = dir;
     }
 }

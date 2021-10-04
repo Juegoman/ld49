@@ -11,6 +11,7 @@ export default class Enemy extends GameModule {
         this.enemyList = [];
         this.zappers = [...(new Array(150)).keys()]
             .map((_,v) => new Zapper(v, this));
+        this.enemiesDestroyed = 0;
         gameModules.UI.uiCameraIgnore(this.zappers.map(z => z.sprite));
         
         scene.anims.create({

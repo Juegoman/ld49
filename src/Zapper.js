@@ -25,6 +25,7 @@ export default class Zapper extends EnemyBase {
         this.sprite.setDepth(-1)
         this.sprite.setFlipX(!getRndInteger(0, 1))
         this.sprite.play('zapperdeath');
+        this.parent.enemiesDestroyed += 1;
     }
     get alive() {
       return this.health > 0;
@@ -57,6 +58,9 @@ export default class Zapper extends EnemyBase {
     }
     update() {
         if (!this.currentTile) {
+            if (this.alive) {
+                this.parent.enemiesDestroyed += 0.5;
+            }
             this.health = 0;
             this.sprite.setVisible(false);
             this.sprite.setActive(false);
