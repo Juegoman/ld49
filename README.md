@@ -2,7 +2,7 @@
 
 A Phaser 3 project
 
-Charge through an endlessly shifting arena.
+Charge through a perpetually *unstable* arena.
 
 ### Controls
 * WASD to control movement
