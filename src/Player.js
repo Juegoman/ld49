@@ -109,7 +109,7 @@ export default class Player extends GameModule {
             this.energy = (this.energy === this.MAXENERGY) ? this.MAXENERGY : this.energy + this.energyRate
     
             if (this.currentTile && this.currentTile.toBeCulled) {
-                this.scene.cameras.main.shake(10);
+                this.scene.cameras.main.shake(10, 0.01);
                 if (this.rumbleTime === RUMBLETIME) {
                     this.scene.sound.play('rumble', { volume: 0.25 });
                     this.rumbleTime = 0;
