@@ -46,12 +46,12 @@ export default class Zapper extends EnemyBase {
         this.sprite.setVisible(value);
         this.sprite.setActive(value);
         this.sprite.setDepth(1);
-        this.sprite.vision = 250;
-        this.sprite.speed = 3;
+        this.vision = 250;
+        this.speed = 3;
         if (value) {
             const rng = getRndInteger(1, 3);
             this.health = 1;
-            if (this.angry) {
+            if (angry) {
                 this.vision = 400;
                 this.speed = 14;
                 this.sprite.play({key: `zapper${rng}`, frameRate: 12});

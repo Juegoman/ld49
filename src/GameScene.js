@@ -1,16 +1,14 @@
-import grassImage from './assets/grass.png';
-import sandImage from './assets/sand.png';
-import stoneImage from './assets/stone.png';
 import characterImage from './assets/dude.png';
 import barrelImage from './assets/barrel.png';
-import shatteringImage from './assets/shattering.png';
 import zapperImage from './assets/zapper.png';
 import sparkImage from './assets/spark.png';
+import terrainImage from './assets/terrain.png';
 
 import rumble from './assets/rumble.wav';
 import zap from './assets/zap.wav';
 import boom from './assets/boom.wav';
 import strike from './assets/strike.wav';
+import jet from './assets/jet.wav';
 
 import World from './World';
 import Player from './Player';
@@ -31,15 +29,13 @@ export default class GameScene extends Phaser.Scene {
     }
 
     preload () {
-        this.load.image('sand', sandImage);
-        this.load.image('stone', stoneImage);
-        this.load.image('grass', grassImage);
         this.load.image('barrel', barrelImage);
-        this.load.image('shattering', shatteringImage);
+        this.load.image('terrain', terrainImage);
         this.load.audio('rumble', rumble);
         this.load.audio('zap', zap);
         this.load.audio('boom', boom);
         this.load.audio('strike', strike);
+        this.load.audio('jet', jet);
         this.load.spritesheet('character', characterImage, { frameWidth: 150, frameHeight: 150 });
         this.load.spritesheet('zapper', zapperImage, { frameWidth: 125, frameHeight: 100 });
         this.load.spritesheet('spark', sparkImage, { frameWidth: 30, frameHeight: 30 });

@@ -10,12 +10,12 @@ export default class World extends GameModule {
         this.scene = scene;
 
         this.tiles = [
-            new Tile(this, { type: 'grass' }),
-            new Tile(this, { type: 'grass' }),
-            new Tile(this, { type: 'stone' }),
-            new Tile(this, { type: 'stone' }),
-            new Tile(this, { type: 'sand' }),
-            new Tile(this, { type: 'sand' }),
+            new Tile(this, { type: 'green' }),
+            new Tile(this, { type: 'green' }),
+            new Tile(this, { type: 'grey' }),
+            new Tile(this, { type: 'grey' }),
+            new Tile(this, { type: 'yellow' }),
+            new Tile(this, { type: 'yellow' }),
         ];
         this.UI.uiCameraIgnore(this.tiles.map(tile => tile.image));
         this.shuffleTiles();

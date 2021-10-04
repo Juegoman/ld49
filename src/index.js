@@ -5,7 +5,7 @@ const config = {
     type: Phaser.AUTO,
     width: 800,
     height: 600,
-    backgroundColor: '#333333',
+    backgroundColor: '#0',
     parent: 'phaser-example',
     antialias: false,
 };

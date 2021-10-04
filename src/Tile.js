@@ -1,25 +1,47 @@
 import getRndInteger from "./getRndInteger";
 import { getCoordinates } from "./worldUtils";
 
+const TINTS = {
+    green: 0x00ff00,
+    grey: 0xaaaaaa,
+    yellow: 0xffff00,
+    red: 0xff0000,
+}
 export default class Tile {
     constructor(world, { type }) {
         this.world = world;
         this.type = type;
-        this.image = world.scene.add.image(0, 0, type).setActive(false).setVisible(false).setDepth(-2);
-        this.mask = world.scene.make.image({ x: 0, y: 0, key: 'shattering', add: false });
+        this.image = world.scene.add.image(0, 0, 'terrain')
+            .setActive(false)
+            .setVisible(false)
+            .setDepth(-2)
+            .setTint(TINTS[type]);
         this.toBeCulled = false;
+        this.flashTimer = 100;
     }
     update() {
-        if (this.toBeCulled && !this.image.mask) {
-            this.image.mask = new Phaser.Display.Masks.BitmapMask(this.world.scene, this.mask);
-            this.mask.setPosition(this.image.x, this.image.y);
-            this.mask.setFlip(getRndInteger(0, 1), getRndInteger(0, 1));
-        } else if (!this.toBeCulled && this.image.mask) {
-            this.image.mask = null;
-            this.mask.setPosition(0, 0);
+        if (this.toBeCulled) {
+            // this.image.mask = new Phaser.Display.Masks.BitmapMask(this.world.scene, this.mask);
+            // this.mask.setPosition(this.image.x, this.image.y);
+            // this.mask.setFlip(getRndInteger(0, 1), getRndInteger(0, 1));
+            if (this.flashTimer === 0) {
+                if (this.image.tintTopLeft === TINTS.red) {
+                    this.image.setTint(TINTS[this.type]);
+                    this.flashTimer = 50;
+                } else {
+                    this.image.setTint(TINTS.red);
+                    this.flashTimer = 10;
+                }
+            } else {
+                this.flashTimer -= 1;
+            }
+        } else if (!this.toBeCulled) {
+            // this.image.mask = null;
+            // this.mask.setPosition(0, 0);
         }
     }
     activate(gridCoords, noEnemies = false) {
+        this.image.setTint(TINTS[this.type]);
         this.image.setActive(true);
         this.image.setVisible(true);
         const {x, y} = getCoordinates(gridCoords);
@@ -35,7 +57,6 @@ export default class Tile {
         return this;
     }
     cull() {
-        this.initial =
         this.toBeCulled = false;
         this.image.setActive(false);
         this.image.setVisible(false);

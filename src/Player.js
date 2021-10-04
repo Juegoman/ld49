@@ -154,6 +154,9 @@ export default class Player extends GameModule {
         if (canMove) {
             this.sprite.setPosition(x + dx, y + dy);
         }
+        if (this.actuallyBoosting) {
+            this.scene.sound.play('jet', { volume: 0.15 })
+        }
         if (boosting && canMove && this.sprite.anims.currentAnim && this.sprite.anims.currentAnim.key !== `${this.direction.lastDir}_BOOST`) {
             this.sprite.play(`${this.direction.lastDir}_BOOST`);
         } else if (!boosting && canMove && (dx || dy) && this.sprite.anims.currentAnim && this.sprite.anims.currentAnim.key !== `${this.direction.lastDir}_RUN`) {
