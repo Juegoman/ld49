@@ -1,10 +1,11 @@
 import GameModule from "./GameModule";
+import titleImage from './assets/titlescreen.png';
 
 export default class UI extends GameModule {
     constructor(gameModule, scene) {
         super(gameModule);
         this.scene = scene;
-        
+        this.title = scene.add.sprite();
         this.uiCamera = scene.cameras.add();
         this.timerText = scene.add.text(630, 60, '', { font: '24px Courier', fill: '#FFFFFF' });
         this.statusText = scene.add.text(630, 30, '', { font: '24px Courier', fill: '#FFFFFF' });
@@ -12,7 +13,7 @@ export default class UI extends GameModule {
         this.scoreText = scene.add.text(30, 90, '', { font: '24px Courier', fill: '#FFFFFF' });
         this.energyText = scene.add.text(30, 30, 'ENERGY', { font: '24px Courier', fill: '#FFFFFF' });
         this.energyBar = new Bar(scene, 120, 32);
-        this.deathText = null;
+        // this.deathText = null;
         this.mainCameraIgnore([this.timerText, this.statusText, this.cycleText, this.energyBar.bar, this.scoreText, this.energyText]);
     }
     update() {
@@ -22,24 +23,12 @@ export default class UI extends GameModule {
         this.cycleText.setText(`Cycle: ${this.world.unstableCycles}`);
         this.energyBar.set(Math.floor((this.player.energy / this.player.MAXENERGY) * 100));
         this.scoreText.setText(`Score: ${this.score}`);
-        
-        if (!this.player.alive && this.deathText === null) {
-            this.deathText = this.scene.add.text(230, 240, '', { backgroundColor: '#646161', font: '32px Arial', fill: '#f6451a', align: 'center', padding: { x: 20, y: 20 } });
-            this.deathText.setText([
-                'You Died',
-                'Restart by pressing R',
-            ]);
-            this.mainCameraIgnore(this.deathText);
-        }
     }
     uiCameraIgnore(obj) {
         this.uiCamera.ignore(obj);
     }
     mainCameraIgnore(obj) {
         this.scene.cameras.main.ignore(obj);
-    }
-    cleanUpDeathText() {
-        this.deathText = null;
     }
     get score() {
         const cycles = (this.world) ? this.world.unstableCycles : 0

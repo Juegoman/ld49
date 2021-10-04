@@ -1,8 +1,8 @@
 import characterImage from './assets/dude.png';
-import barrelImage from './assets/barrel.png';
 import zapperImage from './assets/zapper.png';
 import sparkImage from './assets/spark.png';
 import terrainImage from './assets/terrain.png';
+import titleImage from './assets/titlescreen.png'
 
 import rumble from './assets/rumble.wav';
 import zap from './assets/zap.wav';
@@ -30,7 +30,7 @@ export default class GameScene extends Phaser.Scene {
     }
 
     preload () {
-        this.load.image('barrel', barrelImage);
+        this.load.spritesheet('title', titleImage)
         this.load.image('terrain', terrainImage);
         this.load.audio('rumble', rumble);
         this.load.audio('zap', zap);
@@ -61,10 +61,15 @@ export default class GameScene extends Phaser.Scene {
         });
         document.addEventListener('keypress', () => {
             if (!this.gameModules.player.alive) {
-                this.gameModules.UI.cleanUpDeathText();
                 this.sound.stopAll();
                 this.scene.restart();
             }
+        })
+        this.title = this.anims.create({
+            key: 'titlescreen',
+            frames: this.anims.generateFrameNumbers('title', { frames: [0, 1, 2, 3, 4, 5, 6, 7] }),
+            frameRate: 3,
+            repeat: -1
         })
     }
 
@@ -83,5 +88,8 @@ export default class GameScene extends Phaser.Scene {
         this.gameModules.enemy.update();
         this.gameModules.hitspark.update();
         this.gameModules.UI.update();
+        if (!this.player.alive) {
+
+        }
     }
 }
