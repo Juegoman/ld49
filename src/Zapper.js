@@ -58,7 +58,7 @@ export default class Zapper extends EnemyBase {
     }
     update() {
         if (!this.currentTile) {
-            if (this.alive) {
+            if (this.alive && this.player.alive) {
                 this.parent.enemiesDestroyed += 0.5;
             }
             this.health = 0;
