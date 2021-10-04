@@ -21,10 +21,12 @@ export default class Zapper extends EnemyBase {
         return this;
     }
     hit() {
+        this.parent.scene.sound.play('strike', { volume: 0.5 });
         this.health = 0;
         this.sprite.setDepth(-1)
         this.sprite.setFlipX(!getRndInteger(0, 1))
         this.sprite.play('zapperdeath');
+        this.parent.scene.sound.play('boom', { volume: 0.5 });
         this.parent.enemiesDestroyed += 1;
     }
     get alive() {
@@ -44,6 +46,8 @@ export default class Zapper extends EnemyBase {
         this.sprite.setVisible(value);
         this.sprite.setActive(value);
         this.sprite.setDepth(1);
+        this.sprite.vision = 250;
+        this.sprite.speed = 3;
         if (value) {
             const rng = getRndInteger(1, 3);
             this.health = 1;
@@ -95,6 +99,7 @@ export default class Zapper extends EnemyBase {
                                     this.hitspark.spawn(midpoint.x + getRndPlsMns(20), midpoint.y + getRndPlsMns(20));
                                     count -= 1;
                                 }
+                                this.parent.scene.sound.play('zap', { volume: 0.5 });
                                 this.player.hit(direction);
                             }
                         }

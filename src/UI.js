@@ -23,7 +23,7 @@ export default class UI extends GameModule {
         this.scoreText.setText(`Score: ${this.score}`);
         
         if (!this.player.alive && this.deathText === null) {
-            this.deathText = this.scene.add.text(180, 200, '', { backgroundColor: '#646161', font: '32px Arial', fill: '#f6451a', align: 'center', padding: { x: 20, y: 20 } });
+            this.deathText = this.scene.add.text(230, 240, '', { backgroundColor: '#646161', font: '32px Arial', fill: '#f6451a', align: 'center', padding: { x: 20, y: 20 } });
             this.deathText.setText([
                 'You Died',
                 'Restart by pressing R',

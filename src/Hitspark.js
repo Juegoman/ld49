@@ -5,7 +5,7 @@ export default class HitsparkManager extends GameModule {
     constructor(gameModules, scene) {
         super(gameModules);
         this.scene = scene;
-        this.pool = [...(new Array(200)).keys()]
+        this.pool = [...(new Array(300)).keys()]
             .map((_, v) => new Hitspark(v, scene));
         this.UI.uiCameraIgnore(this.pool.map(h => h.sprite));
         this.activeHitsparks = [];
@@ -43,7 +43,10 @@ export default class HitsparkManager extends GameModule {
         })
     }
     spawn(x, y) {
-        this.activeHitsparks.push(this.pool.pop().spawn(x, y));
+        const spark = this.pool.pop();
+        if (spark) {
+            this.activeHitsparks.push(spark.spawn(x, y));
+        }
     }
 }
 

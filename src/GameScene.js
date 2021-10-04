@@ -8,6 +8,9 @@ import zapperImage from './assets/zapper.png';
 import sparkImage from './assets/spark.png';
 
 import rumble from './assets/rumble.wav';
+import zap from './assets/zap.wav';
+import boom from './assets/boom.wav';
+import strike from './assets/strike.wav';
 
 import World from './World';
 import Player from './Player';
@@ -34,6 +37,9 @@ export default class GameScene extends Phaser.Scene {
         this.load.image('barrel', barrelImage);
         this.load.image('shattering', shatteringImage);
         this.load.audio('rumble', rumble);
+        this.load.audio('zap', zap);
+        this.load.audio('boom', boom);
+        this.load.audio('strike', strike);
         this.load.spritesheet('character', characterImage, { frameWidth: 150, frameHeight: 150 });
         this.load.spritesheet('zapper', zapperImage, { frameWidth: 125, frameHeight: 100 });
         this.load.spritesheet('spark', sparkImage, { frameWidth: 30, frameHeight: 30 });
