@@ -6,19 +6,20 @@ export default class UI extends GameModule {
         this.scene = scene;
         
         this.uiCamera = scene.cameras.add();
-        this.timerText = scene.add.text(30, 30, '', { font: '24px Courier', fill: '#FFFFFF' });
-        this.statusText = scene.add.text(30, 60, '', { font: '24px Courier', fill: '#FFFFFF' });
-        this.cycleText = scene.add.text(60, 30, '', { font: '24px Courier', fill: '#FFFFFF' });
-        this.scoreText = scene.add.text(30, 90, '', { font: '24px Courier', fill: '#FFFFFF' })
-        this.energyBar = new Bar(scene, 100, 32);
+        this.timerText = scene.add.text(630, 60, '', { font: '24px Courier', fill: '#FFFFFF' });
+        this.statusText = scene.add.text(630, 30, '', { font: '24px Courier', fill: '#FFFFFF' });
+        this.cycleText = scene.add.text(630, 90, '', { font: '24px Courier', fill: '#FFFFFF' });
+        this.scoreText = scene.add.text(30, 90, '', { font: '24px Courier', fill: '#FFFFFF' });
+        this.energyText = scene.add.text(30, 30, 'ENERGY', { font: '24px Courier', fill: '#FFFFFF' });
+        this.energyBar = new Bar(scene, 120, 32);
         this.deathText = null;
-        this.mainCameraIgnore([this.timerText, this.statusText, this.cycleText, this.energyBar.bar, this.scoreText]);
+        this.mainCameraIgnore([this.timerText, this.statusText, this.cycleText, this.energyBar.bar, this.scoreText, this.energyText]);
     }
     update() {
         const totalSecondsElapsed = Math.floor(this.world.cycleTick.elapsed / 1000);
-        this.timerText.setText(4 - totalSecondsElapsed);
-        this.statusText.setText(this.world.isUnstable ? 'UNSTABLE' : 'CALM');
-        this.cycleText.setText(this.world.unstableCycles);
+        this.timerText.setText(`Next: ${4 - totalSecondsElapsed}`);
+        this.statusText.setText(`${this.world.isUnstable ? 'UNSTABLE' : 'CALM'}`);
+        this.cycleText.setText(`Cycle: ${this.world.unstableCycles}`);
         this.energyBar.set(Math.floor((this.player.energy / this.player.MAXENERGY) * 100));
         this.scoreText.setText(`Score: ${this.score}`);
         
