@@ -2,7 +2,8 @@ import characterImage from './assets/dude.png';
 import zapperImage from './assets/zapper.png';
 import sparkImage from './assets/spark.png';
 import terrainImage from './assets/terrain.png';
-import titleImage from './assets/titlescreen.png'
+import titleImage from './assets/titlescreen.png';
+import gameOverImage from './assets/gameovertext.png';
 
 import rumble from './assets/rumble.wav';
 import zap from './assets/zap.wav';
@@ -27,11 +28,13 @@ export default class GameScene extends Phaser.Scene {
             enemy: null,
             hitspark: null,
         }
+        this.deathScreen = null;
+        this.deathTextImage = null;
     }
 
     preload () {
-        this.load.spritesheet('title', titleImage)
         this.load.image('terrain', terrainImage);
+        this.load.image('gameover', gameOverImage);
         this.load.audio('rumble', rumble);
         this.load.audio('zap', zap);
         this.load.audio('boom', boom);
@@ -41,6 +44,7 @@ export default class GameScene extends Phaser.Scene {
         this.load.spritesheet('character', characterImage, { frameWidth: 150, frameHeight: 150 });
         this.load.spritesheet('zapper', zapperImage, { frameWidth: 125, frameHeight: 100 });
         this.load.spritesheet('spark', sparkImage, { frameWidth: 30, frameHeight: 30 });
+        this.load.spritesheet('title', titleImage, { frameWidth: 800, frameHeight: 600 });
     }
 
     create () {
@@ -65,12 +69,15 @@ export default class GameScene extends Phaser.Scene {
                 this.scene.restart();
             }
         })
-        this.title = this.anims.create({
+        this.anims.create({
             key: 'titlescreen',
             frames: this.anims.generateFrameNumbers('title', { frames: [0, 1, 2, 3, 4, 5, 6, 7] }),
             frameRate: 3,
             repeat: -1
         })
+        this.deathScreen = this.add.sprite(400, 300, 'title', 0).setVisible(false).setDepth(10);
+        this.deathTextImage = this.add.image(400, 300, 'gameover').setVisible(false).setDepth(11);
+        this.gameModules.UI.mainCameraIgnore([this.deathScreen, this.deathTextImage]);
     }
 
     update () {
@@ -88,8 +95,10 @@ export default class GameScene extends Phaser.Scene {
         this.gameModules.enemy.update();
         this.gameModules.hitspark.update();
         this.gameModules.UI.update();
-        if (!this.player.alive) {
-
+        if (!this.gameModules.player.alive && !this.deathScreen.visible) {
+            this.deathScreen.setVisible(true);
+            this.deathTextImage.setVisible(true);
+            this.deathScreen.play('titlescreen');
         }
     }
 }
