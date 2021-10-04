@@ -13,7 +13,6 @@ import World from './World';
 import Player from './Player';
 import UI from './UI';
 import Enemy from './Enemy';
-import Weapon from './Weapon';
 import Hitspark from './Hitspark';
 
 export default class GameScene extends Phaser.Scene {
@@ -23,7 +22,6 @@ export default class GameScene extends Phaser.Scene {
             world: null,
             player: null,
             UI: null,
-            weapon: null,
             enemy: null,
             hitspark: null,
         }
@@ -44,7 +42,6 @@ export default class GameScene extends Phaser.Scene {
     create () {
         this.gameModules.UI = new UI(this.gameModules, this);
         this.gameModules.player = new Player(this.gameModules, this);
-        this.gameModules.weapon = new Weapon(this.gameModules, this);
         this.gameModules.enemy = new Enemy(this.gameModules, this);
         this.gameModules.world = new World(this.gameModules, this);
         this.gameModules.hitspark = new Hitspark(this.gameModules, this);
@@ -75,7 +72,6 @@ export default class GameScene extends Phaser.Scene {
             this.sound.stopAll();
           }
         }
-        this.gameModules.weapon.update();
         this.gameModules.enemy.update();
         this.gameModules.hitspark.update();
         this.gameModules.UI.update();

@@ -11,9 +11,6 @@ export default class GameModule {
     get UI() {
         return this.gameModules.UI;
     }
-    get weapon() {
-      return this.gameModules.weapon;
-    }
     get enemy() {
       return this.gameModules.enemy;
     }

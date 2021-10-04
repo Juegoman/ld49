@@ -34,7 +34,7 @@ export default class Enemy extends GameModule {
         scene.anims.create({
             key: 'zapperdeath',
             frames: scene.anims.generateFrameNumbers('zapper', { frames: [0, 1, 2, 3, 4, 5] }),
-            frameRate: 4,
+            frameRate: 8,
             repeat: 0,
         });
     }

@@ -5,7 +5,7 @@ export default class Tile {
     constructor(world, { type }) {
         this.world = world;
         this.type = type;
-        this.image = world.scene.add.image(0, 0, type).setActive(false).setVisible(false).setDepth(-1);
+        this.image = world.scene.add.image(0, 0, type).setActive(false).setVisible(false).setDepth(-2);
         this.mask = world.scene.make.image({ x: 0, y: 0, key: 'shattering', add: false });
         this.toBeCulled = false;
     }
