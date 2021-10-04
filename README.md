@@ -2,11 +2,12 @@
 
 A Phaser 3 project
 
-Charge through an endlessly shifting arena.
+Charge through a perpetually *unstable* arena.
 
 ### Controls
 * WASD to control movement
-* Hold Space to boost charge forward
+* Hold Space to while moving to boost attack forward
+* The arena will change on a cycle, flashing red ground is not safe
 * Enemies will bump you. If you get bumped off you die.
 * Charging through enemies will destroy them
 * Boost energy is limited. A minimum boost energy is required to boost so conserve boost energy.
