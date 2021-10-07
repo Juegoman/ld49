@@ -30,6 +30,7 @@ export default class GameScene extends Phaser.Scene {
         }
         this.deathScreen = null;
         this.deathTextImage = null;
+        this.frameTime = 0;
     }
 
     preload () {
@@ -80,9 +81,16 @@ export default class GameScene extends Phaser.Scene {
         this.gameModules.UI.mainCameraIgnore([this.deathScreen, this.deathTextImage]);
     }
 
-    update () {
-        this.gameModules.world.update();
-        this.gameModules.player.update();
+    update (time, delta) {
+        this.frameTime += delta;
+        if (this.frameTime > 16.5) {
+            this.frameTime = 0;
+            this.gameModules.world.update();
+            this.gameModules.player.update();
+            this.gameModules.enemy.update();
+            this.gameModules.hitspark.update();
+            this.gameModules.UI.update();
+        }
         if (this.input.mousePointer.primaryDown) {
           if (!(this.input.mousePointer.x <= 800 &&
             this.input.mousePointer.x >= 0 &&
@@ -92,9 +100,6 @@ export default class GameScene extends Phaser.Scene {
             this.sound.stopAll();
           }
         }
-        this.gameModules.enemy.update();
-        this.gameModules.hitspark.update();
-        this.gameModules.UI.update();
         if (!this.gameModules.player.alive && !this.deathScreen.visible) {
             this.deathScreen.setVisible(true);
             this.deathTextImage.setVisible(true);

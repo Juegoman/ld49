@@ -17,17 +17,14 @@ export default class Tile {
             .setDepth(-2)
             .setTint(TINTS[type]);
         this.toBeCulled = false;
-        this.flashTimer = 100;
+        this.flashTimer = 0;
     }
     update() {
         if (this.toBeCulled) {
-            // this.image.mask = new Phaser.Display.Masks.BitmapMask(this.world.scene, this.mask);
-            // this.mask.setPosition(this.image.x, this.image.y);
-            // this.mask.setFlip(getRndInteger(0, 1), getRndInteger(0, 1));
             if (this.flashTimer === 0) {
                 if (this.image.tintTopLeft === TINTS.red) {
                     this.image.setTint(TINTS[this.type]);
-                    this.flashTimer = 50;
+                    this.flashTimer = 20;
                 } else {
                     this.image.setTint(TINTS.red);
                     this.flashTimer = 10;
@@ -35,9 +32,6 @@ export default class Tile {
             } else {
                 this.flashTimer -= 1;
             }
-        } else if (!this.toBeCulled) {
-            // this.image.mask = null;
-            // this.mask.setPosition(0, 0);
         }
     }
     activate(gridCoords, noEnemies = false) {

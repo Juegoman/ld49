@@ -10,8 +10,8 @@ export default class Zapper extends EnemyBase {
         const sprite = parent.scene.add.sprite(0, 0, 'zapper', 0);
         super(`z${id}`, sprite, parent, 'zapper');
         this.health = 1;
-        this.speed = 3;
-        this.sleepTimer = 15;
+        this.speed = 6;
+        this.sleepTimer = 7;
         this.vision = 250;
         this.hurtbox = 50;
     }
@@ -47,13 +47,13 @@ export default class Zapper extends EnemyBase {
         this.sprite.setActive(value);
         this.sprite.setDepth(1);
         this.vision = 250;
-        this.speed = 3;
+        this.speed = 6;
         if (value) {
             const rng = getRndInteger(1, 3);
             this.health = 1;
             if (angry) {
                 this.vision = 400;
-                this.speed = 14;
+                this.speed = 28;
                 this.sprite.play({key: `zapper${rng}`, frameRate: 12});
             } else {
                 this.sprite.play(`zapper${rng}`);
@@ -105,7 +105,7 @@ export default class Zapper extends EnemyBase {
                         }
                     }
                     // finally after doing ai logic reset sleep timer
-                    this.sleepTimer = 15;
+                    this.sleepTimer = 7;
                 } else {
                     let count = 5;
                     while (count) {
@@ -113,7 +113,7 @@ export default class Zapper extends EnemyBase {
                         count -= 1;
                     }
                     // finally after doing ai logic reset sleep timer
-                    this.sleepTimer = 50;
+                    this.sleepTimer = 20;
                 }
             }
         } else {

@@ -57,17 +57,17 @@ export default class Player extends GameModule {
         this.cursors.space.on('down', () => { this.boosting = true; })
         this.cursors.space.on('up', () => { this.boosting = false; })
 
-        this.speed = 2;
+        this.speed = 5;
         this.rumbleTime = 15;
         this.stun = 0;
         this.knockbackDirection = { x: 0, y: 0 };
-        this.knockbackSpeed = 2;
+        this.knockbackSpeed = 6;
         this.boosting = false;
         this.MAXENERGY = 500;
         this.energy = 500;
         this.energyRate = 1;
         this.boostDrain = 5;
-        this.boostSpeed = 4;
+        this.boostSpeed = 10;
         
         const animConfigs = Object.entries(direction_offset)
             .flatMap(([dir, offset]) => Object.entries(frame_offset)
@@ -134,7 +134,7 @@ export default class Player extends GameModule {
         return this.boosting && this.energy >= this.boostDrain * 10;
     }
     hit(direction) {
-        this.stun = 50;
+        this.stun = 20;
         this.knockbackDirection = direction;
     }
     setStunPosition() {
@@ -174,29 +174,7 @@ export default class Player extends GameModule {
         if (!dir) {
             dir = this.direction.lastDir;
         }
-    
-        // this.sprite.setFlipX(dir.indexOf('W') !== -1);
-        // switch (dir) {
-        //     case 'N':
-        //         this.sprite.play('N');
-        //         break;
-        //     case 'NE':
-        //     case 'NW':
-        //         this.sprite.play('NE');
-        //         break;
-        //     case 'W':
-        //     case 'E':
-        //         this.sprite.play('E');
-        //         break;
-        //     case 'SW':
-        //     case 'SE':
-        //         this.sprite.play('SE');
-        //         break;
-        //     case 'S':
-        //         this.sprite.play('S');
-        //     default:
-        //         break;
-        // }
+
         this.direction.lastDir = dir;
     }
 }
